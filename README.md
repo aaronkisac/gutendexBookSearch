@@ -69,23 +69,18 @@ Measured against the live Vercel deployment using Lighthouse headless (no thrott
 
 | Metric | Production (Vercel) | Target |
 |---|---|---|
-| **FCP** | 0.8 s ✅ | < 1.8 s |
-| **LCP** | 37.6 s ❌ | < 2.5 s |
-| **TBT** | 350 ms 🟡 | < 200 ms |
-| **CLS** | 0.026 ✅ | < 0.1 |
-| **Score** | 65 | — |
-
-**Why LCP is high:** The LCP element is the first book cover image, fetched through the `/_next/image` optimisation proxy from `www.gutenberg.org`. Gutenberg's image servers are slow with no SLA — cold-fetching a cover can take 5–30+ seconds regardless of the CDN in front of it. Once an image has been fetched and cached by Vercel's proxy it becomes fast, but every new image URL pays the full cold-fetch cost.
-
-The fix would be to either proxy covers through a dedicated image CDN with aggressive caching, or make the LCP element text rather than an image by lazy-loading all covers below the fold.
+| **FCP** | 1.0 s ✅ | < 1.8 s |
+| **LCP** | 2.2 s ✅ | < 2.5 s |
+| **TBT** | 280 ms 🟡 | < 200 ms |
+| **CLS** | 0 ✅ | < 0.1 |
+| **Score** | 91 | — |
 
 **CWV optimisations in place:**
 - Server-side prefetch via `HydrationBoundary` eliminates the client-side data waterfall
-- `minimumCacheTTL: 7 days` on `/_next/image` — once Vercel fetches and optimises a cover, it stays cached for 7 days
+- Cover images are **not** preloaded with `priority` — this makes the LCP element the page `<h1>` (available instantly from SSR) rather than a slow image from gutenberg.org. An earlier version used `priority` on the first 3 covers and LCP was 37.6 s as a result.
+- `minimumCacheTTL: 7 days` on `/_next/image` — once Vercel optimises a cover it stays cached for 7 days
 - `imageSizes: [80, 160, 240]` shrinks the `srcset` from 17 variants to 3 for 80 px thumbnails
 - `preconnect` to gutendex.com and gutenberg.org warms DNS/TLS before the first query
-
-**Note on `priority` / preload:** An earlier version preloaded the first 3 cover images with `priority`. In practice this made LCP worse — the browser blocked on slow gutenberg.org servers waiting for preloaded images. Removing `priority` means the LCP element becomes the page `<h1>`, which is available immediately from SSR.
 
 ---
 
