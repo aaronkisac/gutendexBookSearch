@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Book Search', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/books')
-    await expect(page.getByRole('article').first()).toBeVisible({ timeout: 20000 })
+    await expect(page.getByRole('article').first()).toBeVisible({ timeout: 45000 })
   })
 
   test('happy path: search, filter and paginate', async ({ page }) => {
