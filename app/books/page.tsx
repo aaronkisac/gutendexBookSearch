@@ -4,6 +4,7 @@ import { BooksPageClient } from '@/components/books/BooksPageClient'
 import { fetchBooks } from '@/lib/gutendex'
 import { bookKeys } from '@/lib/query-keys'
 import { parseCopyrightParam, parseYearParam } from '@/lib/utils'
+import { QUERY_STALE_TIME_SHORT, SERVER_PREFETCH_TIMEOUT_MS } from '@/lib/constants'
 import Loading from './loading'
 import type { BookFilters } from '@/types/gutendex'
 
@@ -29,9 +30,9 @@ export default async function BooksPage({
     queryClient.prefetchQuery({
       queryKey: bookKeys.list(filters),
       queryFn: () => fetchBooks(filters),
-      staleTime: 60 * 1000,
+      staleTime: QUERY_STALE_TIME_SHORT,
     }),
-    new Promise<void>((resolve) => setTimeout(resolve, 3000)),
+    new Promise<void>((resolve) => setTimeout(resolve, SERVER_PREFETCH_TIMEOUT_MS)),
   ])
 
   return (

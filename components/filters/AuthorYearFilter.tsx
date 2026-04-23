@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { InfoPopover } from '@/components/ui/InfoPopover'
+import { MAX_AUTHOR_YEAR } from '@/lib/constants'
 
 interface AuthorYearFilterProps {
   startYear: number | undefined
@@ -62,7 +63,7 @@ export function AuthorYearFilter({ startYear, endYear, onChange }: AuthorYearFil
           onChange={(e) => setStart(e.target.value)}
           onBlur={commit}
           onKeyDown={handleKeyDown}
-          max={2025}
+          max={MAX_AUTHOR_YEAR}
           className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Author birth year from"
         />
@@ -76,7 +77,7 @@ export function AuthorYearFilter({ startYear, endYear, onChange }: AuthorYearFil
           onChange={(e) => setEnd(e.target.value)}
           onBlur={commit}
           onKeyDown={handleKeyDown}
-          max={2025}
+          max={MAX_AUTHOR_YEAR}
           className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Author birth year to"
         />

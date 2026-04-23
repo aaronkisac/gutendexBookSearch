@@ -1,6 +1,5 @@
+import { GUTENDEX_BASE_URL } from '@/lib/constants'
 import type { BookFilters, GutendexBook, GutendexResponse } from '@/types/gutendex'
-
-const BASE_URL = 'https://gutendex.com'
 
 export class GutendexError extends Error {
   constructor(
@@ -25,7 +24,7 @@ export function buildSearchUrl(filters: BookFilters): string {
   if (filters.authorYearEnd) params.set('author_year_end', String(filters.authorYearEnd))
   if (filters.page && filters.page > 1) params.set('page', String(filters.page))
   const qs = params.toString()
-  return qs ? `${BASE_URL}/books?${qs}` : `${BASE_URL}/books`
+  return qs ? `${GUTENDEX_BASE_URL}/books?${qs}` : `${GUTENDEX_BASE_URL}/books`
 }
 
 export async function fetchBooks(filters: BookFilters): Promise<GutendexResponse> {

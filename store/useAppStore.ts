@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-const MAX_RECENT_SEARCHES = 5
+import { MAX_RECENT_SEARCHES } from '@/lib/constants'
 
 interface AppState {
   recentSearches: string[]

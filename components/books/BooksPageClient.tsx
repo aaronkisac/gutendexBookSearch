@@ -10,6 +10,7 @@ import { useBooks } from '@/hooks/useBooks'
 import { useAppStore } from '@/store/useAppStore'
 import { ActiveFilters } from '@/components/filters/ActiveFilters'
 import { pluralise, parseCopyrightParam, parseYearParam } from '@/lib/utils'
+import { GUTENDEX_PAGE_SIZE } from '@/lib/constants'
 import type { BookFilters } from '@/types/gutendex'
 
 export function BooksPageClient() {
@@ -29,6 +30,7 @@ export function BooksPageClient() {
 
   const { data, isLoading, isError, refetch } = useBooks(filters)
   const currentPage = filters.page ?? 1
+  const totalPages = data ? Math.ceil(data.count / GUTENDEX_PAGE_SIZE) : 1
 
   const updateParams = useCallback(
     (updates: Partial<Record<string, string | number | undefined>>) => {
@@ -40,9 +42,8 @@ export function BooksPageClient() {
           params.set(key, String(value))
         }
       })
-      if (!('page' in updates)) params.delete('page')
       const qs = params.toString()
-      router.push(`${pathname}${qs ? `?${qs}` : ''}`)
+      router.replace(`${pathname}${qs ? `?${qs}` : ''}`)
     },
     [searchParams, router, pathname]
   )
@@ -50,7 +51,7 @@ export function BooksPageClient() {
   const handleSearch = useCallback(
     (value: string) => {
       if (value) addRecentSearch(value)
-      updateParams({ search: value })
+      updateParams({ search: value, page: undefined })
     },
     [updateParams, addRecentSearch]
   )
@@ -63,7 +64,7 @@ export function BooksPageClient() {
   const handleRemoveLanguage = useCallback(
     (code: string) => {
       const next = (filters.languages ?? '').split(',').filter((c) => c !== code).join(',')
-      updateParams({ languages: next })
+      updateParams({ languages: next, page: undefined })
     },
     [filters.languages, updateParams]
   )
@@ -88,20 +89,45 @@ export function BooksPageClient() {
           copyright={filters.copyright}
           authorYearStart={filters.authorYearStart}
           authorYearEnd={filters.authorYearEnd}
-          onLanguageChange={(v) => updateParams({ languages: v })}
-          onCopyrightChange={(v) => updateParams({ copyright: v })}
-          onAuthorYearChange={(start, end) => updateParams({ authorYearStart: start, authorYearEnd: end })}
+          onLanguageChange={(v) => updateParams({ languages: v, page: undefined })}
+          onCopyrightChange={(v) => updateParams({ copyright: v, page: undefined })}
+          onAuthorYearChange={(start, end) => updateParams({ authorYearStart: start, authorYearEnd: end, page: undefined })}
         />
       </div>
 
       {data && (
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <p className="text-sm text-gray-600 shrink-0">{pluralise(data.count, 'result')}</p>
+        <div className="mb-4 space-y-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm text-gray-600 shrink-0">{pluralise(data.count, 'result')}</p>
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1 text-sm text-gray-600">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={!data.previous}
+                  aria-label="Previous page"
+                  className="px-2 py-0.5 rounded border border-gray-300 text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+                >
+                  ‹
+                </button>
+                <span className="text-gray-500 tabular-nums">
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={!data.next}
+                  aria-label="Next page"
+                  className="px-2 py-0.5 rounded border border-gray-300 text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </div>
           <ActiveFilters
             filters={filters}
             onRemoveLanguage={handleRemoveLanguage}
-            onRemoveCopyright={() => updateParams({ copyright: undefined })}
-            onRemoveAuthorYear={() => updateParams({ authorYearStart: undefined, authorYearEnd: undefined })}
+            onRemoveCopyright={() => updateParams({ copyright: undefined, page: undefined })}
+            onRemoveAuthorYear={() => updateParams({ authorYearStart: undefined, authorYearEnd: undefined, page: undefined })}
           />
         </div>
       )}
@@ -114,11 +140,12 @@ export function BooksPageClient() {
         onRetry={() => refetch()}
       />
 
-      {data && (data.next || data.previous) && (
+      {data && totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           hasNext={!!data.next}
           hasPrevious={!!data.previous}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       )}

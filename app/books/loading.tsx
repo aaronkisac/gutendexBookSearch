@@ -1,4 +1,5 @@
 import { BookCardSkeleton } from '@/components/books/BookCardSkeleton'
+import { SKELETON_ITEM_COUNT } from '@/lib/constants'
 
 export default function Loading() {
   return (
@@ -12,7 +13,7 @@ export default function Loading() {
         </div>
       </div>
       <ul className="space-y-3">
-        {Array.from({ length: 5 }, (_, i) => (
+        {Array.from({ length: SKELETON_ITEM_COUNT }, (_, i) => (
           <li key={i}>
             <BookCardSkeleton />
           </li>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDebounce } from '@/hooks/useDebounce'
 import { InfoPopover } from '@/components/ui/InfoPopover'
+import { SEARCH_DEBOUNCE_MS } from '@/lib/constants'
 
 interface SearchBarProps {
   value: string
@@ -16,8 +17,13 @@ export function SearchBar({
   placeholder = 'Search by title or author…',
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(value)
-  const debouncedValue = useDebounce(inputValue, 300)
+  const debouncedValue = useDebounce(inputValue, SEARCH_DEBOUNCE_MS)
   const isFirstRender = useRef(true)
+  const onChangeRef = useRef(onChange)
+
+  useEffect(() => {
+    onChangeRef.current = onChange
+  }, [onChange])
 
   useEffect(() => {
     setInputValue(value)
@@ -28,8 +34,8 @@ export function SearchBar({
       isFirstRender.current = false
       return
     }
-    onChange(debouncedValue)
-  }, [debouncedValue, onChange])
+    onChangeRef.current(debouncedValue)
+  }, [debouncedValue])
 
   return (
     <div className="relative">

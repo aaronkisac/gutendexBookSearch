@@ -5,10 +5,11 @@ interface PaginationProps {
   currentPage: number
   hasNext: boolean
   hasPrevious: boolean
+  totalPages: number
   onPageChange: (page: number) => void
 }
 
-export function Pagination({ currentPage, hasNext, hasPrevious, onPageChange }: PaginationProps) {
+export function Pagination({ currentPage, hasNext, hasPrevious, totalPages, onPageChange }: PaginationProps) {
   return (
     <nav aria-label="Pagination" className="flex items-center justify-center gap-4 mt-8">
       <button
@@ -21,7 +22,7 @@ export function Pagination({ currentPage, hasNext, hasPrevious, onPageChange }: 
       </button>
 
       <span aria-current="page" className="text-sm text-gray-700">
-        Page {currentPage}
+        Page {currentPage} of {totalPages}
       </span>
 
       <button

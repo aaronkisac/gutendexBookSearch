@@ -2,6 +2,7 @@ import { BookCard } from './BookCard'
 import { BookCardSkeleton } from './BookCardSkeleton'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { SKELETON_ITEM_COUNT, PRIORITY_IMAGE_THRESHOLD } from '@/lib/constants'
 import type { GutendexResponse } from '@/types/gutendex'
 
 interface BookListProps {
@@ -17,7 +18,7 @@ export function BookList({ data, isLoading, isError, searchQuery, onRetry }: Boo
     return (
       <section aria-label="Loading books" aria-busy="true">
         <ul className="space-y-3">
-          {Array.from({ length: 5 }, (_, i) => (
+          {Array.from({ length: SKELETON_ITEM_COUNT }, (_, i) => (
             <li key={i}>
               <BookCardSkeleton />
             </li>
@@ -40,7 +41,7 @@ export function BookList({ data, isLoading, isError, searchQuery, onRetry }: Boo
       <ul className="space-y-3">
         {data.results.map((book, index) => (
           <li key={book.id}>
-            <BookCard book={book} priority={index < 3} />
+            <BookCard book={book} priority={index < PRIORITY_IMAGE_THRESHOLD} />
           </li>
         ))}
       </ul>

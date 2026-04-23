@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { getCoverUrl } from '@/lib/gutendex'
+import { MAX_VISIBLE_SUBJECTS } from '@/lib/constants'
 import type { GutendexBook } from '@/types/gutendex'
 
 interface BookCardProps {
@@ -15,8 +16,8 @@ export function BookCard({ book, priority = false }: BookCardProps) {
       ? book.authors.map((a) => a.name.replace(/^([^,]+),\s*(.+)$/, '$2 $1')).join(', ')
       : 'Unknown author'
 
-  const visibleSubjects = book.subjects.slice(0, 4)
-  const hiddenCount = book.subjects.length - 4
+  const visibleSubjects = book.subjects.slice(0, MAX_VISIBLE_SUBJECTS)
+  const hiddenCount = book.subjects.length - MAX_VISIBLE_SUBJECTS
 
   return (
     <article className="flex gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
