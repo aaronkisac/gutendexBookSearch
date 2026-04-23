@@ -2,7 +2,7 @@ import { BookCard } from './BookCard'
 import { BookCardSkeleton } from './BookCardSkeleton'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { SKELETON_ITEM_COUNT, PRIORITY_IMAGE_THRESHOLD } from '@/lib/constants'
+import { SKELETON_ITEM_COUNT } from '@/lib/constants'
 import type { GutendexResponse } from '@/types/gutendex'
 
 interface BookListProps {
@@ -39,9 +39,9 @@ export function BookList({ data, isLoading, isError, searchQuery, onRetry }: Boo
   return (
     <section aria-label="Book results">
       <ul className="space-y-3">
-        {data.results.map((book, index) => (
+        {data.results.map((book) => (
           <li key={book.id}>
-            <BookCard book={book} priority={index < PRIORITY_IMAGE_THRESHOLD} />
+            <BookCard book={book} />
           </li>
         ))}
       </ul>

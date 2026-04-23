@@ -5,10 +5,9 @@ import type { GutendexBook } from '@/types/gutendex'
 
 interface BookCardProps {
   book: GutendexBook
-  priority?: boolean
 }
 
-export function BookCard({ book, priority = false }: BookCardProps) {
+export function BookCard({ book }: BookCardProps) {
   const coverUrl = getCoverUrl(book)
 
   const authorNames =
@@ -29,7 +28,7 @@ export function BookCard({ book, priority = false }: BookCardProps) {
             fill
             sizes="80px"
             className="object-cover"
-            priority={priority}
+
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-gray-400">

@@ -16,7 +16,5 @@ export const SERVER_PREFETCH_TIMEOUT_MS = 3000
 // UI display
 export const SKELETON_ITEM_COUNT = 5
 export const MAX_VISIBLE_SUBJECTS = 4
-export const PRIORITY_IMAGE_THRESHOLD = 3
-
 // Filters
 export const MAX_AUTHOR_YEAR = 2025
